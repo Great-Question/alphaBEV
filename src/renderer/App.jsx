@@ -6,16 +6,58 @@ import './App.css';
 const Home = () => {
   const [state, setState] = useState({
     rootDir: '',
+    mfeDir: [],
+    mfeCount: 0,
   });
 
-  const dirButtonValue = 'Set Root Directory';
-  dirDisplay = (e) => {
-    let dir = document.getElementById('dir-upload').files[0].path;
-		const name = document.getElementById('dir-upload').files[0].name;
-		dir = dir.replace(name, '');
-    setState({ rootDir: dir });
-    console.log('DIRECTORY = ', name);
+  const newMfeButton = (
+    <div>
+      <label htmlFor="mfe-1" className="custom-file-upload">
+        {state.mfeDir.length > 0
+          ? state.mfeDir[0]
+          : 'Set MicroFrontend Directory'}
+      </label>
+      <input type="file" webkitdirectory="true" id="mfe-1" />
+    </div>
+  );
+
+  const [mfeLoaders, setMfeLoader] = useState([newMfeButton]);
+
+  const mfeDirDisplay = (e) => {
+    console.log('THE STATE AT BEGINNING OF MFEDIRDISPLAY : ', state);
+    let dir = document.getElementById(e.target.id).files[0].path; // path/index.jsx
+    const { name } = document.getElementById(e.target.id).files[0]; // index.jsx
+    dir = dir.replace(name, ''); // path
+    const newMfeDir = [...state.mfeDir]; // array of Strings
+    newMfeDir.push(dir);
+    setState({
+      rootDir: state.rootDir,
+      mfeDir: newMfeDir,
+      mfeCount: state.mfeCount + 1,
+    });
   };
+
+  const dirDisplay = (e) => {
+    console.log('dirDISPLAY IS CALLED');
+    let dir = document.getElementById('dir-upload').files[0].path; // path/index.jsx
+    const { name } = document.getElementById('dir-upload').files[0]; // index.jsx
+    dir = dir.replace(name, ''); // path
+    setState({ ...state, rootDir: dir });
+  };
+
+  const addMFELoader = () => {
+    console.log('INSIDE ADD LOADER');
+    console.log('mfeCOUNTER', state.mfeCount);
+    setMfeLoader([...mfeLoaders, newMfeButton]);
+  };
+
+  useEffect(() => {
+    console.log('CURRENT STATE ', state);
+    // setState({ ...state});
+    document
+      .getElementById('mfe-1')
+      .addEventListener('change', (e) => mfeDirDisplay(e));
+  });
 
   return (
     <div>
@@ -33,18 +75,14 @@ const Home = () => {
         onChange={(e) => dirDisplay(e)}
       />
       <div className="Hello">
-        <a
-          href="https://electron-react-boilerplate.js.org/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              📚
-            </span>
-            Read our docs
-          </button>
-        </a>
+        {mfeLoaders}
+        <button type="button" onClick={() => addMFELoader()}>
+          <span role="img" aria-label="books">
+            📚
+          </span>
+          + MicroFrontEnd
+        </button>
+
         <a
           href="https://github.com/sponsors/electron-react-boilerplate"
           target="_blank"
