@@ -1,12 +1,12 @@
 import { cruise } from "dependency-cruiser";
 import fs from "fs";
 console.log('you have reached the fetch_dependencies file!');
-const ARRAY_OF_FILES_AND_DIRS_TO_CRUISE = [ "./"] 
+const ARRAY_OF_FILES_AND_DIRS_TO_CRUISE = [ "src"] 
 const cruiseOptions = {
-  // includeOnly: ["src", "assets", "public", "main.js"],
-  // exclude: {
-  //   path: "node_modules"
-  // },
+  includeOnly: ["src", "assets"],
+  exclude: {
+    path: "node_modules"
+  },
   reporterOptions: {
     dot: {
       theme: {
